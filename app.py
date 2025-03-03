@@ -389,7 +389,7 @@ def update_metrics():
                         """, unsafe_allow_html=True)
 
 def main():
-    st.title("AI Emotional Support Companion")
+    st.title("Asha")
     st.markdown("""
     > **Important**: This AI companion provides emotional support but is NOT a replacement for professional mental health care. 
     > If you're in crisis, please call 988 (US) or your local emergency services immediately.

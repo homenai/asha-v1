@@ -3,18 +3,32 @@ import streamlit as st
 from openai import OpenAI
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from difflib import SequenceMatcher
+import os
+from dotenv import load_dotenv
 
 # Initialize VADER sentiment analyzer
 analyzer = SentimentIntensityAnalyzer()
+
+# Load environment variables
+load_dotenv()
 
 def initialize_session_state():
     """Initialize session state variables."""
     if 'history' not in st.session_state:
         st.session_state.history = []
     if 'openai_client' not in st.session_state:
-        # Set up OpenAI client
-        api_key = st.secrets["openai"]["api_key"]  # Store your API key in streamlit secrets
-        st.session_state.openai_client = OpenAI(api_key=api_key)
+        try:
+            # Set up OpenAI client
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                raise KeyError("OPENAI_API_KEY not found in environment variables")
+            st.session_state.openai_client = OpenAI(api_key=api_key)
+        except Exception as e:
+            st.error(f"""
+                Error initializing OpenAI client: {str(e)}
+                Please ensure OPENAI_API_KEY is set in your .env file.
+                """)
+            st.stop()
 
 def generate_dynamic_prompt(history):
     """Generate a dynamic system prompt based on the conversation history."""
